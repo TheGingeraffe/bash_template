@@ -9,7 +9,7 @@ Files
 | File            | Description                                                                                     |
 | --------------- |------------------------------------------------------------------------------------------------ |
 | **common.sh**   | Designed for sourcing into scripts; contains only those functions unlikely to need modification |
-| **script.sh**   | Sample script which sources in `source.sh` and contains those functions likely to be modified   |
+| **script.sh**   | Sample script which sources in `common.sh` and contains those functions likely to be modified   |
 | **colors.sh**   | Contains all color codes separately due to length         										|
 
 Usage

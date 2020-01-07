@@ -3,22 +3,14 @@ bash-script-template
 
 A *Bash* scripting template incorporating best practices & several useful functions.
 
-Motivation
-----------
-
-I write Bash scripts frequently and realised that I often copied a recent script whenever I started writing a new one. This provided me with a basic scaffold to work on and several useful helper functions I'd otherwise likely end up duplicating.
-
-Rather than continually copying old scripts and flensing the irrelevant code, I'm publishing a more formalised template to ease the process for my own usage and anyone else who may find it helpful. Suggestions for improvements are most welcome.
-
 Files
 -----
 
 | File            | Description                                                                                     |
 | --------------- |------------------------------------------------------------------------------------------------ |
-| **template.sh** | A fully self-contained script which combines `source.sh` & `script.sh`                          |
-| **source.sh**   | Designed for sourcing into scripts; contains only those functions unlikely to need modification |
+| **common.sh**   | Designed for sourcing into scripts; contains only those functions unlikely to need modification |
 | **script.sh**   | Sample script which sources in `source.sh` and contains those functions likely to be modified   |
-| **build.sh**    | Generates `template.sh` by combining `source.sh` & `template.sh` (just a helper script)         |
+| **colors.sh**   | Contains all color codes separately due to length         										|
 
 Usage
 -----
@@ -27,14 +19,11 @@ Being a Bash script you're free to *slice-and-dice* the source as you see fit.
 
 The following steps outline what's typically involved to help you get started:
 
-1. Choose between using either:
-    1. `template.sh` (fully self-contained)
-    2. `script.sh` with `source.sh` (source in most functions)
-2. Depending on your choice open `template.sh` or `script.sh` for editing
-3. Update the `script_usage()` function with additional usage guidance
-4. Update the `parse_params()` function with additional script parameters
-5. Add additional functions to implement the desired functionality
-6. Update the `main()` function to call your additional functions
+1. Open`script.sh` for editing
+2. Update the `script_usage()` function with additional usage guidance
+3. Update the `parse_params()` function with additional script parameters
+4. Add additional functions to implement the desired functionality
+5. Update the `main()` function to call your added functions
 
 ### Adding a `hostname` parameter
 

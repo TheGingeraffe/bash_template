@@ -2,9 +2,8 @@
 
 # A best practices Bash script template with many useful functions. This file
 # sources in the bulk of the functions from the source.sh file which it expects
-# to be in the same directory. Only those functions which are likely to need
-# modification are present in this file. This is a great combination if you're
-# writing several scripts! By pulling in the common functions you'll minimise
+# to be in the same directory. Only functions which are likely to need modification
+# are present in this file. By pulling in the common functions you'll minimise
 # code duplication, as well as ease any potential updates to shared functions.
 
 # A better class of script...
@@ -13,6 +12,10 @@ set -o errtrace         # Make sure any error trap is inherited
 set -o nounset          # Disallow expansion of unset variables
 set -o pipefail         # Use last non-zero exit code in a pipeline
 #set -o xtrace          # Trace the execution of the script (debug)
+
+# Print help if no arguments were passed
+# Uncomment to force arguments when invoking the script
+[[ $# -eq 0 ]] && set -- "--help"
 
 # DESC: Usage help
 # ARGS: None
@@ -41,6 +44,18 @@ function parse_params() {
                 script_usage
                 exit 0
                 ;;
+            -u|--username)
+                shift
+                username=${1}
+                ;;
+            -p|--password)
+                shift
+                echo "Enter pass: "
+                stty -echo
+                read PASS
+                stty echo
+                echo
+                ;;
             -v|--verbose)
                 verbose=true
                 ;;
@@ -49,6 +64,9 @@ function parse_params() {
                 ;;
             -cr|--cron)
                 cron=true
+                ;;
+            -d|--debug)
+                debug=true
                 ;;
             *)
                 script_exit "Invalid parameter was provided: $param" 1
@@ -78,5 +96,3 @@ function main() {
 
 # Make it rain
 main "$@"
-
-# vim: syntax=sh cc=80 tw=79 ts=4 sw=4 sts=4 et sr

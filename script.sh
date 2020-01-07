@@ -11,7 +11,6 @@ set -o errexit          # Exit on most errors (see the manual)
 set -o errtrace         # Make sure any error trap is inherited
 set -o nounset          # Disallow expansion of unset variables
 set -o pipefail         # Use last non-zero exit code in a pipeline
-#set -o xtrace          # Trace the execution of the script (debug)
 
 # Print help if no arguments were passed
 # Uncomment to force arguments when invoking the script
@@ -24,11 +23,10 @@ function script_usage() {
     cat << EOF
 Usage:
      -h|--help                  Displays this help
-     -v|--verbose               Displays verbose output
      -u|--username              Sets string following arg as \${username}
      -p|--password              Prompts for password to pass
-    -nc|--no-colour             Disables colour output
-    -cr|--cron                  Run silently and log output unless script errors
+     -v|--verbose               Displays verbose output
+     -d|--debug                 Sets \${debug}=true
 EOF
 }
 
@@ -50,19 +48,13 @@ function parse_params() {
                 username=${1}
                 ;;
             -p|--password)
-# Find the best risk-averse method
+# Find the best risk-averse method to pass password
                 ;;
             -v|--verbose)
                 verbose=true
                 ;;
-            -nc|--no-colour)
-                no_colour=true
-                ;;
-            -cr|--cron)
-                cron=true
-                ;;
             -d|--debug)
-                debug=true
+                set -o xtrace
                 ;;
             *)
                 script_exit "Invalid parameter was provided: $param" 1
@@ -75,8 +67,6 @@ function parse_params() {
 # ARGS: $@ (optional): Arguments provided to the script
 # OUTS: None
 function main() {
-    # Colors must be sourced first if used in common.sh
-    source "$(dirname "${BASH_SOURCE[0]}")/colors.sh"
     source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
     trap script_trap_err ERR
@@ -84,8 +74,6 @@ function main() {
 
     script_init "$@"
     parse_params "$@"
-    cron_init
-    colour_init
     #lock_init system
 }
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# A best practices Bash script template with many useful functions. This file
-# is suitable for sourcing into other scripts and so only contains functions
-# which are unlikely to need modification. It omits the following functions:
+# This file is suitable for sourcing into other scripts and
+# only contains functions which are unlikely to need modification.
+# It omits the following functions:
 # - main()
 # - parse_params()
 # - script_usage()
@@ -53,7 +53,6 @@ function script_trap_err() {
     exit "$exit_code"
 }
 
-
 # DESC: Handler for exiting the script
 # ARGS: None
 # OUTS: None
@@ -73,7 +72,6 @@ function script_trap_exit() {
     # Restore terminal colours
     printf '%b' "$ta_none"
 }
-
 
 # DESC: Exit script with the given message
 # ARGS: $1 (required): Message to print on exit
@@ -102,7 +100,6 @@ function script_exit() {
     script_exit 'Missing required argument to script_exit()!' 2
 }
 
-
 # DESC: Generic script initialisation
 # ARGS: $@ (optional): Arguments provided to the script
 # OUTS: $orig_cwd: The current working directory when the script was run
@@ -127,102 +124,16 @@ function script_init() {
     readonly ta_none="$(tput sgr0 2> /dev/null || true)"
 }
 
-
-# DESC: Initialise colour variables
-# ARGS: None
-# OUTS: Read-only variables with ANSI control codes
-# NOTE: If --no-colour was set the variables will be empty
-function colour_init() {
-    if [[ -z ${no_colour-} ]]; then
-        # Text attributes
-        readonly ta_bold="$(tput bold 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly ta_uscore="$(tput smul 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly ta_blink="$(tput blink 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly ta_reverse="$(tput rev 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly ta_conceal="$(tput invis 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-
-        # Foreground codes
-        readonly fg_black="$(tput setaf 0 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly fg_blue="$(tput setaf 4 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly fg_cyan="$(tput setaf 6 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly fg_green="$(tput setaf 2 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly fg_magenta="$(tput setaf 5 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly fg_red="$(tput setaf 1 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly fg_white="$(tput setaf 7 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly fg_yellow="$(tput setaf 3 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-
-        # Background codes
-        readonly bg_black="$(tput setab 0 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly bg_blue="$(tput setab 4 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly bg_cyan="$(tput setab 6 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly bg_green="$(tput setab 2 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly bg_magenta="$(tput setab 5 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly bg_red="$(tput setab 1 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly bg_white="$(tput setab 7 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly bg_yellow="$(tput setab 3 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-    else
-        # Text attributes
-        readonly ta_bold=''
-        readonly ta_uscore=''
-        readonly ta_blink=''
-        readonly ta_reverse=''
-        readonly ta_conceal=''
-
-        # Foreground codes
-        readonly fg_black=''
-        readonly fg_blue=''
-        readonly fg_cyan=''
-        readonly fg_green=''
-        readonly fg_magenta=''
-        readonly fg_red=''
-        readonly fg_white=''
-        readonly fg_yellow=''
-
-        # Background codes
-        readonly bg_black=''
-        readonly bg_blue=''
-        readonly bg_cyan=''
-        readonly bg_green=''
-        readonly bg_magenta=''
-        readonly bg_red=''
-        readonly bg_white=''
-        readonly bg_yellow=''
-    fi
-}
-
-
 # DESC: Initialise Cron mode
 # ARGS: None
 # OUTS: $script_output: Path to the file stdout & stderr was redirected to
 function cron_init() {
     if [[ -n ${cron-} ]]; then
         # Redirect all output to a temporary file
-        readonly script_output="$(mktemp --tmpdir "$script_name".XXXXX)"
+        readonly script_output="$(mktemp --tmpdir "$script_name".$(date +%s))"
         exec 3>&1 4>&2 1>"$script_output" 2>&1
     fi
 }
-
 
 # DESC: Acquire script lock
 # ARGS: $1 (optional): Scope of script execution lock (system or user)
@@ -248,7 +159,6 @@ function lock_init() {
         script_exit "Unable to acquire script lock: $lock_dir" 1
     fi
 }
-
 
 # DESC: Pretty print the provided string
 # ARGS: $1 (required): Message to print (defaults to a green foreground)
@@ -277,7 +187,6 @@ function pretty_print() {
     fi
 }
 
-
 # DESC: Only pretty_print() the provided string if verbose mode is enabled
 # ARGS: $@ (required): Passed through to pretty_print() function
 # OUTS: None
@@ -286,40 +195,6 @@ function verbose_print() {
         pretty_print "$@"
     fi
 }
-
-
-# DESC: Combines two path variables and removes any duplicates
-# ARGS: $1 (required): Path(s) to join with the second argument
-#       $2 (optional): Path(s) to join with the first argument
-# OUTS: $build_path: The constructed path
-# NOTE: Heavily inspired by: https://unix.stackexchange.com/a/40973
-function build_path() {
-    if [[ $# -lt 1 ]]; then
-        script_exit 'Missing required argument to build_path()!' 2
-    fi
-
-    local new_path path_entry temp_path
-
-    temp_path="$1:"
-    if [[ -n ${2-} ]]; then
-        temp_path="$temp_path$2:"
-    fi
-
-    new_path=
-    while [[ -n $temp_path ]]; do
-        path_entry="${temp_path%%:*}"
-        case "$new_path:" in
-            *:"$path_entry":*) ;;
-                            *) new_path="$new_path:$path_entry"
-                               ;;
-        esac
-        temp_path="${temp_path#*:}"
-    done
-
-    # shellcheck disable=SC2034
-    build_path="${new_path#:}"
-}
-
 
 # DESC: Check a binary exists in the search path
 # ARGS: $1 (required): Name of the binary to test for existence
@@ -342,7 +217,6 @@ function check_binary() {
     verbose_print "Found dependency: $1"
     return 0
 }
-
 
 # DESC: Validate we have superuser access as root (via sudo if requested)
 # ARGS: $1 (optional): Set to any value to not attempt root access via sudo
@@ -375,7 +249,6 @@ function check_superuser() {
     return 0
 }
 
-
 # DESC: Run the requested command as root (via sudo if requested)
 # ARGS: $1 (optional): Set to zero to not attempt execution via sudo
 #       $@ (required): Passed through for execution as root user
@@ -399,5 +272,3 @@ function run_as_root() {
         script_exit "Unable to run requested command as root: $*" 1
     fi
 }
-
-# vim: syntax=sh cc=80 tw=79 ts=4 sw=4 sts=4 et sr

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # A best practices Bash script template with many useful functions. This file
-# sources in the bulk of the functions from the source.sh file which it expects
+# sources in the bulk of the functions from the common.sh file which it expects
 # to be in the same directory. Only functions which are likely to need modification
 # are present in this file. By pulling in the common functions you'll minimise
 # code duplication, as well as ease any potential updates to shared functions.
@@ -25,11 +25,12 @@ function script_usage() {
 Usage:
      -h|--help                  Displays this help
      -v|--verbose               Displays verbose output
+     -u|--username              Sets string following arg as \${username}
+     -p|--password              Prompts for password to pass
     -nc|--no-colour             Disables colour output
-    -cr|--cron                  Run silently unless we encounter an error
+    -cr|--cron                  Run silently and log output unless script errors
 EOF
 }
-
 
 # DESC: Parameter parser
 # ARGS: $@ (optional): Arguments provided to the script
@@ -49,12 +50,7 @@ function parse_params() {
                 username=${1}
                 ;;
             -p|--password)
-                shift
-                echo "Enter pass: "
-                stty -echo
-                read PASS
-                stty echo
-                echo
+# Find the best risk-averse method
                 ;;
             -v|--verbose)
                 verbose=true
@@ -75,13 +71,13 @@ function parse_params() {
     done
 }
 
-
 # DESC: Main control flow
 # ARGS: $@ (optional): Arguments provided to the script
 # OUTS: None
 function main() {
-    # shellcheck source=source.sh
-    source "$(dirname "${BASH_SOURCE[0]}")/source.sh"
+    # Colors must be sourced first if used in common.sh
+    source "$(dirname "${BASH_SOURCE[0]}")/colors.sh"
+    source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
     trap script_trap_err ERR
     trap script_trap_exit EXIT
@@ -93,6 +89,5 @@ function main() {
     #lock_init system
 }
 
-
-# Make it rain
+# Execute main passing all args
 main "$@"
